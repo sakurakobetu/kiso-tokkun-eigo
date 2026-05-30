@@ -422,6 +422,7 @@
   .tag { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
   .tag.your { background: var(--wrong-bg); color: var(--wrong); }
   .tag.correct { background: var(--correct-bg); color: var(--correct); }
+  .q-blank{display:inline-block;min-width:3em;border-bottom:2px solid #2a5298;margin:0 2px;vertical-align:bottom;}
 </style>
 </head>
 <body>
@@ -561,16 +562,17 @@ const questions = [
   { id:33, en:'I bought a ticket to take the <u>train</u>.', ja:'私は_____に乗るために切符を買いました。', answer:'電車', choices:['電車','バス','飛行機','船'] },
   { id:34, en:'<u>Can I</u> go with you?', ja:'あなたと一緒に行っ_____。', answer:'てもよいですか', choices:['てもよいですか','てくれませんか','ましょうか','なければなりません'] },
   { id:35, en:'Do you have <u>anything</u> to drink?', ja:'あなたは_____飲むものを持っていますか。', answer:'何か', choices:['何か','何も','何でも','たくさん'] },
-  { id:36, type:'spelling', ja:'私は今日することが何もありません。', en:'I have (　　　) to do today.', answer:'nothing' },
-  { id:37, type:'spelling', ja:'私はその計画に参加しました。', en:'I took part in the (　　　).', answer:'plan' },
-  { id:38, type:'spelling', ja:'彼らは十分な食べ物を得ることができませんでした。', en:"They couldn't get (　　　) food.", answer:'enough' },
-  { id:39, type:'spelling', ja:'私は外国に行きたいです。', en:'I want to go (　　　).', answer:'abroad' },
-  { id:40, type:'spelling', ja:'ほとんどすべての人々が英語を勉強します。', en:'(　　　) all people study English.', answer:'Almost' },
+  { id:36, type:'spelling', ja:'私は今日することが何もありません。', en:'I have <span class="q-blank"></span> to do today.', answer:'nothing' },
+  { id:37, type:'spelling', ja:'私はその計画に参加しました。', en:'I took part in the <span class="q-blank"></span>.', answer:'plan' },
+  { id:38, type:'spelling', ja:'彼らは十分な食べ物を得ることができませんでした。', en:"They couldn't get <span class='q-blank'></span> food.", answer:'enough' },
+  { id:39, type:'spelling', ja:'私は外国に行きたいです。', en:'I want to go <span class="q-blank"></span>.', answer:'abroad' },
+  { id:40, type:'spelling', ja:'ほとんどすべての人々が英語を勉強します。', en:'<span class="q-blank"></span> all people study English.', answer:'Almost' },
 ];
 
 // ============================================================
 // 状態変数
 // ============================================================
+function toBlank(s){return String(s).replace(/_+/g,'<span class="q-blank"></span>').replace(/\u3000+/g,'<span class="q-blank"></span>');}
 let current = 0, score = 0, mcCorrect = 0, spCorrect = 0;
 let wrongItems = [], studentName = '', studentId = '', answered = false;
 
@@ -648,7 +650,7 @@ function showQuestion() {
     document.getElementById('q-type-badge').className = 'q-type-badge sp';
     document.getElementById('q-type-badge').textContent = '英語を書く';
     document.getElementById('q-en').innerHTML = q.en;
-    document.getElementById('q-ja').textContent = q.ja;
+    document.getElementById('q-ja').innerHTML = toBlank(q.ja);
     document.getElementById('choices-area').style.display = 'none';
     document.getElementById('spelling-area').style.display = 'block';
     document.getElementById('submit-btn').style.display = 'block';
@@ -660,7 +662,7 @@ function showQuestion() {
     document.getElementById('q-type-badge').className = 'q-type-badge mc';
     document.getElementById('q-type-badge').textContent = '日本語を選ぶ';
     document.getElementById('q-en').innerHTML = q.en;
-    document.getElementById('q-ja').textContent = q.ja;
+    document.getElementById('q-ja').innerHTML = toBlank(q.ja);
     document.getElementById('choices-area').style.display = 'flex';
     document.getElementById('spelling-area').style.display = 'none';
     document.getElementById('submit-btn').style.display = 'none';
