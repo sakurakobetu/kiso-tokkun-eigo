@@ -90,6 +90,11 @@
   .tag.your{background:var(--wrong-bg);color:var(--wrong)}
   .tag.correct{background:var(--correct-bg);color:var(--correct)}
   .q-blank{display:inline-block;min-width:3em;border-bottom:2px solid #2a5298;margin:0 2px;vertical-align:bottom;}
+  .spell-blank{display:inline-block;min-width:80px;padding:4px 8px;margin:0 3px;border:none;border-bottom:2px solid var(--primary);font-size:18px;font-family:'DM Mono',monospace;color:var(--text);background:var(--card);text-align:center;-webkit-appearance:none}
+  .spell-blank:focus{outline:none;border-bottom-color:var(--correct)}
+  .spell-blank.correct{border-bottom-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+  .spell-blank.wrong{border-bottom-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
+  .spell-words{display:inline-block;font-size:11px;color:var(--muted);vertical-align:super;margin-left:1px}
 </style>
 </head>
 <body>
@@ -120,10 +125,6 @@
       <div class="q-ja" id="q-ja"></div>
     </div>
     <div class="choices" id="choices-area"></div>
-    <div class="spelling-wrap" id="spelling-area" style="display:none">
-      <input class="spelling-input" type="text" id="spelling-input" lang="en" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="英語で入力">
-      <p class="spelling-hint">※ 英字で入力してください</p>
-    </div>
     <button class="submit-btn" id="submit-btn" onclick="checkSpelling()" style="display:none">確認する</button>
     <div class="feedback" id="feedback"><span class="feedback-icon" id="feedback-icon"></span><span id="feedback-text"></span></div>
     <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
@@ -146,7 +147,7 @@
 <script>
 const GAS_URL='https://script.google.com/macros/s/AKfycbxHCGsHhsLwygDs_N20njZTKl5A2OPYS2__rzVEcHOf0rw8bB5nUvfsc577hb0egbya0A/exec';
 const LEVEL='7段';
-const questions=[{"id": 1, "en": "My uncle's house is in the <u>forest</u>.", "ja": "私のおじの家は　　　　の中にあります。", "answer": "森", "choices": ["森", "砂漠", "海", "草原"]}, {"id": 2, "en": "The <u>custom</u> sounds strange to us.", "ja": "その　　　　　は私たちにとって奇妙に聞こえます。", "answer": "習慣", "choices": ["習慣", "規則", "言葉", "考え方"]}, {"id": 3, "en": "I will <u>get home</u> with Yuki.", "ja": "私はユキと一緒に　　　　　　　つもりです。", "answer": "帰宅する", "choices": ["帰宅する", "出発する", "休憩する", "立ち止まる"]}, {"id": 4, "en": "Please <u>hold on</u> a minute.", "ja": "少しの間　　　　　　　　　　　　　ください。", "answer": "電話を切らずに待って", "choices": ["電話を切らずに待って", "後で電話して", "すぐに戻って", "もう少し話して"]}, {"id": 5, "en": "Did many fish <u>die</u> in the lake?", "ja": "たくさんの魚が湖で　　　　　ましたか。", "answer": "死にました", "choices": ["死にました", "生き残りました", "泳ぎました", "増えました"]}, {"id": 6, "en": "I think <u>health</u> is more important than money.", "ja": "　　　　　はお金よりも大切だと思います。", "answer": "健康", "choices": ["健康", "体力", "時間", "お金"]}, {"id": 7, "en": "This robot uses a lot of <u>electricity</u>.", "ja": "このロボットはたくさんの　　　　　を使います。", "answer": "電気", "choices": ["電気", "水", "ガス", "石油"]}, {"id": 8, "en": "Which <u>side</u> won the soccer game?", "ja": "どちら　　　　がサッカーの試合に勝ちましたか。", "answer": "側", "choices": ["側", "チーム", "グループ", "ペア"]}, {"id": 9, "en": "I have a <u>stomachache</u>.", "ja": "私は　　　　　がします。", "answer": "腹痛", "choices": ["腹痛", "頭痛", "熱", "めまい"]}, {"id": 10, "en": "What is the tallest <u>tower</u> in Japan?", "ja": "日本でいちばん高い　　　　は何ですか。", "answer": "塔", "choices": ["塔", "橋", "城", "寺"]}, {"id": 11, "en": "Music can <u>express</u> a lot of feelings.", "ja": "音楽は多くの感情　　　　　　　　ことができます。", "answer": "を表現する", "choices": ["を表現する", "を理解する", "を隠す", "を忘れる"]}, {"id": 12, "en": "I think that our plan will <u>fail</u>.", "ja": "私は、私たちの計画は　　　　　　　だろうと思います。", "answer": "失敗する", "choices": ["失敗する", "成功する", "続く", "変わる"]}, {"id": 13, "en": "Please <u>turn right</u> at the park.", "ja": "公園のところで　　　　　　　　　ください。", "answer": "右に曲がって", "choices": ["右に曲がって", "左に曲がって", "まっすぐ進んで", "止まって"]}, {"id": 14, "en": "I gave my sister a <u>doll</u>.", "ja": "私は妹に　　　　　をあげました。", "answer": "人形", "choices": ["人形", "ぬいぐるみ", "おもちゃ", "カード"]}, {"id": 15, "en": "Many birds will <u>gather</u> on the island.", "ja": "多くの鳥がその島に　　　　　　でしょう。", "answer": "集まる", "choices": ["集まる", "去る", "飛ぶ", "戻る"]}, {"id": 16, "en": "What do they <u>produce</u> here?", "ja": "彼らはここで何　　　　　　　ますか。", "answer": "を生産し", "choices": ["を生産し", "を消費し", "を発明し", "を輸入し"]}, {"id": 17, "en": "<u>Thanks</u> <u>to</u> you, I was able to finish it.", "ja": "あなた　　　　　　　、私はそれを終えることができました。", "answer": "のおかげで", "choices": ["のおかげで", "のかわりに", "にもかかわらず", "にとって"]}, {"id": 18, "en": "If you are not careful, you will <u>hurt</u> your fingers.", "ja": "もしあなたが注意深くなければ、指　　　　　　　　でしょう。", "answer": "を傷つける", "choices": ["を傷つける", "を治す", "を切る", "を折る"]}, {"id": 19, "en": "She has <u>tools</u> to make a cake.", "ja": "彼女はケーキを作るための　　　　　を持っています。", "answer": "道具", "choices": ["道具", "材料", "機械", "資料"]}, {"id": 20, "en": "You must not <u>burn</u> the paper.", "ja": "その紙　　　　　　　はいけません。", "answer": "を焼いて", "choices": ["を焼いて", "を守っては", "を見ては", "を運んでは"]}, {"id": 21, "en": "My sister wants to <u>bake</u> a cake.", "ja": "私の姉はケーキ　　　　　　たいと思っています。", "answer": "を焼き", "choices": ["を焼き", "を煮", "を食べ", "を切り"]}, {"id": 22, "en": "Emi told Kenta about <u>secret</u>.", "ja": "エミはケンタにその　　　　　について話しました。", "answer": "秘密", "choices": ["秘密", "計画", "目標", "夢"]}, {"id": 23, "en": "I would like to <u>introduce</u> my parents to you.", "ja": "あなたに私の両親　　　　　　　たいと思います。", "answer": "を紹介し", "choices": ["を紹介し", "を呼び", "を説明させ", "を見せ"]}, {"id": 24, "en": "I have twenty <u>dollars</u> now.", "ja": "私は今、20　　　　　を持っています。", "answer": "ドル", "choices": ["ドル", "ユーロ", "円", "ポンド"]}, {"id": 25, "en": "Please <u>go straight</u>.", "ja": "　　　　　　　　　　ください。", "answer": "まっすぐ行って", "choices": ["まっすぐ行って", "まっすぐ止まって", "右に曲がって", "後ろに戻って"]}, {"id": 26, "en": "I have just cooked a <u>meal</u>.", "ja": "私はちょうど　　　　　を作ったところです。", "answer": "食事", "choices": ["食事", "料理", "おやつ", "弁当"]}, {"id": 27, "en": "I visited a <u>farm</u> yesterday.", "ja": "私は昨日、　　　　　を訪れました。", "answer": "農場", "choices": ["農場", "牧場", "工場", "学校"]}, {"id": 28, "en": "Are you a <u>staff</u> member?", "ja": "あなたは　　　　　ですか。", "answer": "職員", "choices": ["職員", "会員", "選手", "リーダー"]}, {"id": 29, "en": "Yesterday's lowest temperature was 2 <u>degrees</u>.", "ja": "昨日の最低気温は2　　　　でした。", "answer": "度", "choices": ["度", "メートル", "キロ", "センチ"]}, {"id": 30, "en": "If the <u>waves</u> are high, you must not swim here.", "ja": "もし　　　　が高ければ、ここで泳いではいけません。", "answer": "波", "choices": ["波", "潮", "雨", "雪"]}, {"id": 31, "en": "You can <u>take out</u> the sandwich.", "ja": "あなたはそのサンドイッチ　　　　　　　　ことができます。", "answer": "を持ち帰る", "choices": ["を持ち帰る", "を食べる", "を拾う", "を集める"]}, {"id": 32, "en": "That pool is 25 <u>meters</u> long.", "ja": "あのプールの長さは25　　　　　　　あります。", "answer": "メートル", "choices": ["メートル", "キロメートル", "センチメートル", "ミリメートル"]}, {"id": 33, "en": "He will <u>lead</u> the dogs to the field.", "ja": "彼が野原にイヌ　　　　　　でしょう。", "answer": "を導く", "choices": ["を導く", "を追いかける", "を探す", "を集める"]}, {"id": 34, "en": "Would you like this <u>product</u>?", "ja": "こちらの　　　　　はいかがですか。", "answer": "製品", "choices": ["製品", "サービス", "アイテム", "セット"]}, {"id": 35, "en": "She enjoyed the <u>conversation</u> with her classmates.", "ja": "彼女はクラスメイトたちとの　　　　　を楽しみました。", "answer": "会話", "choices": ["会話", "議論", "交流", "コメント"]}, {"id": 36, "type": "spelling", "ja": "あなたは切符を買いましたか。", "en": "Did you buy a <span class=\"q-blank\"></span>?", "answer": "ticket"}, {"id": 37, "type": "spelling", "ja": "3つ目の信号で左に曲がってください。", "en": "Please <span class=\"q-blank\"></span> at the third light.", "answer": "turn left"}, {"id": 38, "type": "spelling", "ja": "カズヤはあなたと話したいと思っています。", "en": "Kazuya wants to <span class=\"q-blank\"></span> you.", "answer": "talk with"}, {"id": 39, "type": "spelling", "ja": "私は私の本をあなたの家に持っていくつもりです。", "en": "I will <span class=\"q-blank\"></span> my book <span class=\"q-blank\"></span> your house.", "answer": "bring / to"}, {"id": 40, "type": "spelling", "ja": "それを試着してもよいですか。", "en": "Can I <span class=\"q-blank\"></span> it <span class=\"q-blank\"></span>?", "answer": "try / on"}];
+const questions=[{"id": 1, "en": "My uncle's house is in the <u>forest</u>.", "ja": "私のおじの家は　　　　の中にあります。", "answer": "森", "choices": ["森", "砂漠", "海", "草原"]}, {"id": 2, "en": "The <u>custom</u> sounds strange to us.", "ja": "その　　　　　は私たちにとって奇妙に聞こえます。", "answer": "習慣", "choices": ["習慣", "規則", "言葉", "考え方"]}, {"id": 3, "en": "I will <u>get home</u> with Yuki.", "ja": "私はユキと一緒に　　　　　　　つもりです。", "answer": "帰宅する", "choices": ["帰宅する", "出発する", "休憩する", "立ち止まる"]}, {"id": 4, "en": "Please <u>hold on</u> a minute.", "ja": "少しの間　　　　　　　　　　　　　ください。", "answer": "電話を切らずに待って", "choices": ["電話を切らずに待って", "後で電話して", "すぐに戻って", "もう少し話して"]}, {"id": 5, "en": "Did many fish <u>die</u> in the lake?", "ja": "たくさんの魚が湖で　　　　　ましたか。", "answer": "死にました", "choices": ["死にました", "生き残りました", "泳ぎました", "増えました"]}, {"id": 6, "en": "I think <u>health</u> is more important than money.", "ja": "　　　　　はお金よりも大切だと思います。", "answer": "健康", "choices": ["健康", "体力", "時間", "お金"]}, {"id": 7, "en": "This robot uses a lot of <u>electricity</u>.", "ja": "このロボットはたくさんの　　　　　を使います。", "answer": "電気", "choices": ["電気", "水", "ガス", "石油"]}, {"id": 8, "en": "Which <u>side</u> won the soccer game?", "ja": "どちら　　　　がサッカーの試合に勝ちましたか。", "answer": "側", "choices": ["側", "チーム", "グループ", "ペア"]}, {"id": 9, "en": "I have a <u>stomachache</u>.", "ja": "私は　　　　　がします。", "answer": "腹痛", "choices": ["腹痛", "頭痛", "熱", "めまい"]}, {"id": 10, "en": "What is the tallest <u>tower</u> in Japan?", "ja": "日本でいちばん高い　　　　は何ですか。", "answer": "塔", "choices": ["塔", "橋", "城", "寺"]}, {"id": 11, "en": "Music can <u>express</u> a lot of feelings.", "ja": "音楽は多くの感情　　　　　　　　ことができます。", "answer": "を表現する", "choices": ["を表現する", "を理解する", "を隠す", "を忘れる"]}, {"id": 12, "en": "I think that our plan will <u>fail</u>.", "ja": "私は、私たちの計画は　　　　　　　だろうと思います。", "answer": "失敗する", "choices": ["失敗する", "成功する", "続く", "変わる"]}, {"id": 13, "en": "Please <u>turn right</u> at the park.", "ja": "公園のところで　　　　　　　　　ください。", "answer": "右に曲がって", "choices": ["右に曲がって", "左に曲がって", "まっすぐ進んで", "止まって"]}, {"id": 14, "en": "I gave my sister a <u>doll</u>.", "ja": "私は妹に　　　　　をあげました。", "answer": "人形", "choices": ["人形", "ぬいぐるみ", "おもちゃ", "カード"]}, {"id": 15, "en": "Many birds will <u>gather</u> on the island.", "ja": "多くの鳥がその島に　　　　　　でしょう。", "answer": "集まる", "choices": ["集まる", "去る", "飛ぶ", "戻る"]}, {"id": 16, "en": "What do they <u>produce</u> here?", "ja": "彼らはここで何　　　　　　　ますか。", "answer": "を生産し", "choices": ["を生産し", "を消費し", "を発明し", "を輸入し"]}, {"id": 17, "en": "<u>Thanks</u> <u>to</u> you, I was able to finish it.", "ja": "あなた　　　　　　　、私はそれを終えることができました。", "answer": "のおかげで", "choices": ["のおかげで", "のかわりに", "にもかかわらず", "にとって"]}, {"id": 18, "en": "If you are not careful, you will <u>hurt</u> your fingers.", "ja": "もしあなたが注意深くなければ、指　　　　　　　　でしょう。", "answer": "を傷つける", "choices": ["を傷つける", "を治す", "を切る", "を折る"]}, {"id": 19, "en": "She has <u>tools</u> to make a cake.", "ja": "彼女はケーキを作るための　　　　　を持っています。", "answer": "道具", "choices": ["道具", "材料", "機械", "資料"]}, {"id": 20, "en": "You must not <u>burn</u> the paper.", "ja": "その紙　　　　　　　はいけません。", "answer": "を焼いて", "choices": ["を焼いて", "を守っては", "を見ては", "を運んでは"]}, {"id": 21, "en": "My sister wants to <u>bake</u> a cake.", "ja": "私の姉はケーキ　　　　　　たいと思っています。", "answer": "を焼き", "choices": ["を焼き", "を煮", "を食べ", "を切り"]}, {"id": 22, "en": "Emi told Kenta about <u>secret</u>.", "ja": "エミはケンタにその　　　　　について話しました。", "answer": "秘密", "choices": ["秘密", "計画", "目標", "夢"]}, {"id": 23, "en": "I would like to <u>introduce</u> my parents to you.", "ja": "あなたに私の両親　　　　　　　たいと思います。", "answer": "を紹介し", "choices": ["を紹介し", "を呼び", "を説明させ", "を見せ"]}, {"id": 24, "en": "I have twenty <u>dollars</u> now.", "ja": "私は今、20　　　　　を持っています。", "answer": "ドル", "choices": ["ドル", "ユーロ", "円", "ポンド"]}, {"id": 25, "en": "Please <u>go straight</u>.", "ja": "　　　　　　　　　　ください。", "answer": "まっすぐ行って", "choices": ["まっすぐ行って", "まっすぐ止まって", "右に曲がって", "後ろに戻って"]}, {"id": 26, "en": "I have just cooked a <u>meal</u>.", "ja": "私はちょうど　　　　　を作ったところです。", "answer": "食事", "choices": ["食事", "料理", "おやつ", "弁当"]}, {"id": 27, "en": "I visited a <u>farm</u> yesterday.", "ja": "私は昨日、　　　　　を訪れました。", "answer": "農場", "choices": ["農場", "牧場", "工場", "学校"]}, {"id": 28, "en": "Are you a <u>staff</u> member?", "ja": "あなたは　　　　　ですか。", "answer": "職員", "choices": ["職員", "会員", "選手", "リーダー"]}, {"id": 29, "en": "Yesterday's lowest temperature was 2 <u>degrees</u>.", "ja": "昨日の最低気温は2　　　　でした。", "answer": "度", "choices": ["度", "メートル", "キロ", "センチ"]}, {"id": 30, "en": "If the <u>waves</u> are high, you must not swim here.", "ja": "もし　　　　が高ければ、ここで泳いではいけません。", "answer": "波", "choices": ["波", "潮", "雨", "雪"]}, {"id": 31, "en": "You can <u>take out</u> the sandwich.", "ja": "あなたはそのサンドイッチ　　　　　　　　ことができます。", "answer": "を持ち帰る", "choices": ["を持ち帰る", "を食べる", "を拾う", "を集める"]}, {"id": 32, "en": "That pool is 25 <u>meters</u> long.", "ja": "あのプールの長さは25　　　　　　　あります。", "answer": "メートル", "choices": ["メートル", "キロメートル", "センチメートル", "ミリメートル"]}, {"id": 33, "en": "He will <u>lead</u> the dogs to the field.", "ja": "彼が野原にイヌ　　　　　　でしょう。", "answer": "を導く", "choices": ["を導く", "を追いかける", "を探す", "を集める"]}, {"id": 34, "en": "Would you like this <u>product</u>?", "ja": "こちらの　　　　　はいかがですか。", "answer": "製品", "choices": ["製品", "サービス", "アイテム", "セット"]}, {"id": 35, "en": "She enjoyed the <u>conversation</u> with her classmates.", "ja": "彼女はクラスメイトたちとの　　　　　を楽しみました。", "answer": "会話", "choices": ["会話", "議論", "交流", "コメント"]}, {"id": 36, "type": "spelling", "ja": "あなたは切符を買いましたか。", "en": "Did you buy a <span class=\"spell-blank\" data-idx=\"0\"></span> ?", "blanks": [{"accept": ["ticket"], "words": 1}], "answer": "ticket"}, {"id": 37, "type": "spelling", "ja": "3つ目の信号で左に曲がってください。", "en": "Please <span class=\"spell-blank\" data-idx=\"0\"></span> at the third light.", "blanks": [{"accept": ["turn left"], "words": 2}], "answer": "turn left"}, {"id": 38, "type": "spelling", "ja": "カズヤはあなたと話したいと思っています。", "en": "Kazuya wants to <span class=\"spell-blank\" data-idx=\"0\"></span> you.", "blanks": [{"accept": ["talk with"], "words": 2}], "answer": "talk with"}, {"id": 39, "type": "spelling", "ja": "私は私の本をあなたの家に持っていくつもりです。", "en": "I will <span class=\"spell-blank\" data-idx=\"0\"></span> my book <span class=\"spell-blank\" data-idx=\"1\"></span> your house.", "blanks": [{"accept": ["bring"], "words": 1}, {"accept": ["to"], "words": 1}], "answer": "bring / to"}, {"id": 40, "type": "spelling", "ja": "それを試着してもよいですか。", "en": "Can I <span class=\"spell-blank\" data-idx=\"0\"></span> it <span class=\"spell-blank\" data-idx=\"1\"></span> ?", "blanks": [{"accept": ["try"], "words": 1}, {"accept": ["on"], "words": 1}], "answer": "try / on"}];
 function toBlank(s){return String(s).replace(/\u3000+/g,'<span class="q-blank"></span>');}
 let current=0,score=0,mcCorrect=0,spCorrect=0,wrongItems=[],studentName='',studentId='',answered=false;
 document.getElementById('input-name').addEventListener('input',validateLogin);
@@ -176,20 +177,26 @@ function showQuestion(){
   if(isSp){
     document.getElementById('q-type-badge').className='q-type-badge sp';
     document.getElementById('q-type-badge').textContent='英語を書く';
-    document.getElementById('q-en').innerHTML=q.en;
+    // 英文中の空欄を入力欄に変換
+    let enHtml=q.en;let bi=0;
+    enHtml=enHtml.replace(/<span class="spell-blank" data-idx="(\d+)"><\/span>/g,(m,idx)=>{
+      const bl=q.blanks[idx];
+      const w=bl.words?`<span class="spell-words">${bl.words}語</span>`:'';
+      const ph=bl.words&&bl.words>1?`${bl.words}語`:'';
+      return `<input class="spell-blank" type="text" data-idx="${idx}" lang="en" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="${ph}">${w}`;
+    });
+    document.getElementById('q-en').innerHTML=enHtml;
     document.getElementById('q-ja').innerHTML=toBlank(q.ja);
     document.getElementById('choices-area').style.display='none';
-    document.getElementById('spelling-area').style.display='block';
     document.getElementById('submit-btn').style.display='block';
     document.getElementById('submit-btn').disabled=false;
-    const inp=document.getElementById('spelling-input');inp.value='';inp.className='spelling-input';inp.disabled=false;inp.focus();
+    const firstInp=document.querySelector('#q-en .spell-blank');if(firstInp)firstInp.focus();
   }else{
     document.getElementById('q-type-badge').className='q-type-badge mc';
     document.getElementById('q-type-badge').textContent='日本語を選ぶ';
     document.getElementById('q-en').innerHTML=q.en;
     document.getElementById('q-ja').innerHTML=toBlank(q.ja);
     document.getElementById('choices-area').style.display='flex';
-    document.getElementById('spelling-area').style.display='none';
     document.getElementById('submit-btn').style.display='none';
     const shuffled=[...q.choices].sort(()=>Math.random()-.5);
     const labels=['ア','イ','ウ','エ'];
@@ -206,12 +213,29 @@ function selectChoice(btn,selected,correct){
 }
 function checkSpelling(){
   if(answered)return;
-  const inp=document.getElementById('spelling-input'),val=inp.value.trim();
-  if(!val){inp.focus();return;}
-  answered=true;inp.disabled=true;document.getElementById('submit-btn').disabled=true;
-  const correct=questions[current].answer;
-  if(val.toLowerCase()===correct.toLowerCase()){inp.classList.add('correct');score++;spCorrect++;showFeedback(true,`正解！ "${correct}"`);}
-  else{inp.classList.add('wrong');wrongItems.push({id:questions[current].id,q:questions[current].ja,yours:val,correct});showFeedback(false,`不正解。正しくは "${correct}" です。`);}
+  const q=questions[current];
+  const inputs=[...document.querySelectorAll('#q-en .spell-blank')];
+  // 未入力チェック
+  for(const inp of inputs){if(!inp.value.trim()){inp.focus();return;}}
+  answered=true;
+  document.getElementById('submit-btn').disabled=true;
+  const norm=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
+  let allCorrect=true;
+  const yoursArr=[];
+  inputs.forEach(inp=>{
+    inp.disabled=true;
+    const idx=parseInt(inp.dataset.idx);
+    const bl=q.blanks[idx];
+    const val=inp.value;
+    yoursArr.push(val.trim());
+    const ok=bl.accept.some(a=>norm(a)===norm(val));
+    if(ok){inp.classList.add('correct');}
+    else{inp.classList.add('wrong');allCorrect=false;}
+  });
+  // 正解表示用文字列
+  const correctStr=q.blanks.map(b=>b.accept.join(' / ')).join(' , ');
+  if(allCorrect){score++;spCorrect++;showFeedback(true,`正解！ "${correctStr}"`);}
+  else{wrongItems.push({id:q.id,q:q.ja,yours:yoursArr.join(' / '),correct:correctStr});showFeedback(false,`不正解。正しくは "${correctStr}" です。`);}
   document.getElementById('next-btn').className='next-btn visible';
 }
 function showFeedback(correct,msg){const fb=document.getElementById('feedback');document.getElementById('feedback-icon').textContent=correct?'✓':'✗';document.getElementById('feedback-text').textContent=msg;fb.className='feedback '+(correct?'correct':'wrong');}
