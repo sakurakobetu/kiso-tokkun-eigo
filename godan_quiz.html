@@ -29,17 +29,17 @@
   .quiz-header-info{font-size:12px;opacity:.8}
   .progress-bar-wrap{height:4px;background:rgba(255,255,255,.3)}
   .progress-bar-fill{height:100%;background:#fff;transition:width .4s ease}
-  .quiz-body{padding:24px 20px;max-width:600px;margin:0 auto}
-  .q-number{font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.1em;margin-bottom:8px}
-  .q-type-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:12px}
+  .quiz-body{padding:16px 18px;max-width:600px;margin:0 auto}
+  .q-number{font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.1em;margin-bottom:5px}
+  .q-type-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:8px}
   .q-type-badge.mc{background:var(--primary-light);color:var(--primary)}
   .q-type-badge.sp{background:#fff3e0;color:#e67e00}
-  .q-sentence{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow)}
+  .q-sentence{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
   .q-en{font-family:'DM Mono',monospace;font-size:15px;line-height:1.8;margin-bottom:10px;word-break:break-word}
   .q-en u{text-decoration:none;border-bottom:2px solid var(--accent);color:var(--accent);font-weight:500}
   .q-ja{font-size:14px;color:var(--muted);line-height:1.7}
-  .choices{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
-  .choice-btn{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;font-size:15px;font-family:inherit;color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+  .choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .choice-btn{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:11px 16px;font-size:15px;font-family:inherit;color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
   .choice-btn:active{transform:scale(.99)}
   .choice-btn:not(:disabled):hover{border-color:var(--primary);background:var(--primary-light)}
   .choice-num{width:28px;height:28px;border-radius:50%;background:var(--bg);color:var(--muted);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
@@ -54,14 +54,14 @@
   .spelling-input.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
   .spelling-input.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
   .spelling-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
-  .submit-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;margin-bottom:12px}
+  .submit-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;margin-bottom:10px}
   .submit-btn:disabled{opacity:.4;cursor:not-allowed}
   .submit-btn:active{transform:scale(.98)}
   .feedback{border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:14px;font-weight:500;display:none;align-items:flex-start;gap:10px}
   .feedback.correct{background:var(--correct-bg);color:var(--correct);border:1px solid #a8d8bc;display:flex}
   .feedback.wrong{background:var(--wrong-bg);color:var(--wrong);border:1px solid #f5b5b5;display:flex}
   .feedback-icon{font-size:18px;flex-shrink:0;margin-top:1px}
-  .next-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;display:none}
+  .next-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:10px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;display:none}
   .next-btn.visible{display:block}
   .next-btn:active{transform:scale(.98)}
   #result-screen{display:none;padding:40px 24px;max-width:480px;margin:0 auto}
@@ -90,11 +90,16 @@
   .tag.your{background:var(--wrong-bg);color:var(--wrong)}
   .tag.correct{background:var(--correct-bg);color:var(--correct)}
   .q-blank{display:inline-block;min-width:3em;border-bottom:2px solid #2a5298;margin:0 2px;vertical-align:bottom;}
-  .spell-blank{display:inline-block;min-width:80px;padding:4px 8px;margin:0 3px;border:none;border-bottom:2px solid var(--primary);font-size:18px;font-family:'DM Mono',monospace;color:var(--text);background:var(--card);text-align:center;-webkit-appearance:none}
-  .spell-blank:focus{outline:none;border-bottom-color:var(--correct)}
-  .spell-blank.correct{border-bottom-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
-  .spell-blank.wrong{border-bottom-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
-  .spell-words{display:inline-block;font-size:11px;color:var(--muted);vertical-align:super;margin-left:1px}
+  .spell-word-input{display:inline-block;width:auto;min-width:48px;max-width:100%;box-sizing:content-box;padding:3px 4px;margin:0 2px;border:none;border-bottom:2px solid var(--primary);font-size:16px;font-family:'DM Mono',monospace;color:var(--text);background:var(--card);text-align:center;-webkit-appearance:none;vertical-align:middle}
+  .spell-word-input:focus{outline:none;border-bottom-color:var(--correct)}
+  .spell-word-input.correct{border-bottom-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+  .spell-word-input.wrong{border-bottom-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
+  .q-en-spell{line-height:2.6;font-size:16px;word-break:keep-all;overflow-wrap:normal}
+  .q-sentence{display:flex;flex-direction:column}
+  .q-sentence.spell-mode .q-ja{order:1;font-size:18px;font-weight:500;color:var(--text);margin-bottom:4px}
+  .q-sentence.spell-mode .q-en{order:2;margin-top:8px}
+  .q-sentence.spell-mode .spell-guide{order:3}
+  .spell-guide{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.6}
 </style>
 </head>
 <body>
@@ -120,9 +125,10 @@
   <div class="quiz-body">
     <div class="q-number" id="q-number">問題 1</div>
     <div class="q-type-badge mc" id="q-type-badge">日本語を選ぶ</div>
-    <div class="q-sentence">
+    <div class="q-sentence" id="q-sentence">
       <div class="q-en" id="q-en"></div>
       <div class="q-ja" id="q-ja"></div>
+      <p class="spell-guide" id="spell-guide" style="display:none">スペースキーで次のマスへ進みます。すべて入力したら「確認する」を押してください。</p>
     </div>
     <div class="choices" id="choices-area"></div>
     <button class="submit-btn" id="submit-btn" onclick="checkSpelling()" style="display:none">確認する</button>
@@ -177,23 +183,42 @@ function showQuestion(){
   if(isSp){
     document.getElementById('q-type-badge').className='q-type-badge sp';
     document.getElementById('q-type-badge').textContent='英語を書く';
-    // 英文中の空欄を入力欄に変換
-    let enHtml=q.en;let bi=0;
+    // 英文中の各空欄を「単語数分の入力欄」に変換（案B）
+    let enHtml=q.en;
     enHtml=enHtml.replace(/<span class="spell-blank" data-idx="(\d+)"><\/span>/g,(m,idx)=>{
       const bl=q.blanks[idx];
-      const w=bl.words?`<span class="spell-words">${bl.words}語</span>`:'';
-      const ph=bl.words&&bl.words>1?`${bl.words}語`:'';
-      return `<input class="spell-blank" type="text" data-idx="${idx}" lang="en" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="${ph}">${w}`;
+      const wcount=bl.words||Math.max(...bl.accept.map(a=>a.trim().split(/\s+/).length));
+      let inputs='';
+      for(let w=0;w<wcount;w++){
+        inputs+=`<input class="spell-word-input" type="text" data-idx="${idx}" data-word="${w}" lang="en" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">`;
+      }
+      return inputs;
     });
+    document.getElementById('q-en').className='q-en q-en-spell';
     document.getElementById('q-en').innerHTML=enHtml;
-    document.getElementById('q-ja').innerHTML=toBlank(q.ja);
+    document.getElementById('q-ja').innerHTML=q.ja;
+    document.getElementById('q-sentence').classList.add('spell-mode');
+    document.getElementById('spell-guide').style.display='block';
     document.getElementById('choices-area').style.display='none';
     document.getElementById('submit-btn').style.display='block';
     document.getElementById('submit-btn').disabled=false;
-    const firstInp=document.querySelector('#q-en .spell-blank');if(firstInp)firstInp.focus();
+    // スペースキーで次の入力欄へ移動
+    const sInputs=[...document.querySelectorAll('#q-en .spell-word-input')];
+    sInputs.forEach((inp,i)=>{
+      // 入力文字数に応じてマス幅を自動調整（等幅フォントなのでchで過不足なく伸びる）
+      const fit=()=>{const n=Math.max((inp.value||'').length,4);inp.style.width=(n+1)+'ch';};
+      fit();inp.addEventListener('input',fit);
+      inp.addEventListener('keydown',function(e){
+        if(e.key===' '||e.code==='Space'){e.preventDefault();if(i+1<sInputs.length){sInputs[i+1].focus();}else{document.getElementById('submit-btn').focus();}}
+      });
+    });
+    if(sInputs[0])sInputs[0].focus();
   }else{
     document.getElementById('q-type-badge').className='q-type-badge mc';
     document.getElementById('q-type-badge').textContent='日本語を選ぶ';
+    document.getElementById('q-sentence').classList.remove('spell-mode');
+    document.getElementById('spell-guide').style.display='none';
+    document.getElementById('q-en').className='q-en';
     document.getElementById('q-en').innerHTML=q.en;
     document.getElementById('q-ja').innerHTML=toBlank(q.ja);
     document.getElementById('choices-area').style.display='flex';
@@ -214,26 +239,23 @@ function selectChoice(btn,selected,correct){
 function checkSpelling(){
   if(answered)return;
   const q=questions[current];
-  const inputs=[...document.querySelectorAll('#q-en .spell-blank')];
-  // 未入力チェック
+  const inputs=[...document.querySelectorAll('#q-en .spell-word-input')];
   for(const inp of inputs){if(!inp.value.trim()){inp.focus();return;}}
   answered=true;
   document.getElementById('submit-btn').disabled=true;
   const norm=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
   let allCorrect=true;
   const yoursArr=[];
-  inputs.forEach(inp=>{
-    inp.disabled=true;
-    const idx=parseInt(inp.dataset.idx);
-    const bl=q.blanks[idx];
-    const val=inp.value;
-    yoursArr.push(val.trim());
-    const ok=bl.accept.some(a=>norm(a)===norm(val));
-    if(ok){inp.classList.add('correct');}
-    else{inp.classList.add('wrong');allCorrect=false;}
+  q.blanks.forEach((bl,bi)=>{
+    // この空欄の入力欄をまとめる
+    const wInputs=inputs.filter(inp=>parseInt(inp.dataset.idx)===bi);
+    const joined=wInputs.map(inp=>inp.value.trim()).join(' ');
+    yoursArr.push(joined);
+    const ok=bl.accept.some(a=>norm(a)===norm(joined));
+    wInputs.forEach(inp=>{inp.classList.add(ok?'correct':'wrong');inp.disabled=true;});
+    if(!ok)allCorrect=false;
   });
-  // 正解表示用文字列
-  const correctStr=q.blanks.map(b=>b.accept.join(' / ')).join(' , ');
+  const correctStr=q.blanks.map(b=>b.accept.join(' または ')).join(' , ');
   if(allCorrect){score++;spCorrect++;showFeedback(true,`正解！ "${correctStr}"`);}
   else{wrongItems.push({id:q.id,q:q.ja,yours:yoursArr.join(' / '),correct:correctStr});showFeedback(false,`不正解。正しくは "${correctStr}" です。`);}
   document.getElementById('next-btn').className='next-btn visible';
