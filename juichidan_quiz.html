@@ -165,13 +165,26 @@ async function startLogin(){
   if(!name||!id)return;
   const btn=document.getElementById('start-btn'),errEl=document.getElementById('login-error');
   btn.disabled=true;btn.innerHTML='<span class="btn-loading"></span>確認中…';errEl.style.display='none';
-  try{
-    const res=await fetch(`${GAS_URL}?action=login&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
-    const data=await res.json();
-    if(data.status==='ok'){studentName=data.studentName;studentId=data.studentId;startQuiz();}
-    else{errEl.textContent=data.message||'ログインできませんでした。';errEl.style.display='block';btn.disabled=false;btn.textContent='テストを開始する';}
-  }catch(e){errEl.textContent='通信エラーが発生しました。Wi-Fiを確認してもう一度お試しください。';errEl.style.display='block';btn.disabled=false;btn.textContent='テストを開始する';}
+  const resetBtn=(msg)=>{errEl.textContent=msg;errEl.style.display='block';btn.disabled=false;btn.textContent='テストを開始する';};
+  // 応答が遅いときは15秒で打ち切り、自動でもう1回だけやり直す
+  for(let attempt=1;attempt<=2;attempt++){
+    const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),15000);
+    try{
+      const res=await fetch(`${GAS_URL}?action=login&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&t=${Date.now()}`,{signal:ctrl.signal,cache:'no-store'});
+      clearTimeout(timer);
+      const data=await res.json();
+      if(data.status==='ok'){studentName=data.studentName;studentId=data.studentId;startQuiz();}
+      else{resetBtn(data.message||'ログインできませんでした。');}
+      return;
+    }catch(e){
+      clearTimeout(timer);
+      if(attempt===1){btn.innerHTML='<span class="btn-loading"></span>もう一度確認中…';continue;}
+      resetBtn('サーバーの応答に時間がかかっています。少し待ってから、もう一度「テストを開始する」を押してください。');
+    }
+  }
 }
+// ページを開いた時点でサーバーを起こしておく（名前を入力している間に準備が終わる）
+fetch(`${GAS_URL}?action=ping&t=${Date.now()}`,{cache:'no-store'}).catch(()=>{});
 function startQuiz(){document.getElementById('login-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';current=0;score=0;mcCorrect=0;spCorrect=0;wrongItems=[];answered=false;showQuestion();}
 function showQuestion(){
   const q=questions[current];answered=false;
