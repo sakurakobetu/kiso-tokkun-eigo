@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英単語確認テスト【11段】</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Mono:wght@500&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f5f3ee;--card:#fff;--primary:#2a5298;--primary-light:#e8edf8;--accent:#e8571a;--mark:#e8571a;--correct:#1a7a4a;--correct-bg:#e6f4ec;--wrong:#cc2f2f;--wrong-bg:#fdecea;--text:#1a1a1a;--muted:#6b6b6b;--border:#ddd8d0;--shadow:0 2px 12px rgba(0,0,0,.08)}
+  body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+  #login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+  .login-card{background:var(--card);border-radius:16px;padding:40px 32px;width:100%;max-width:380px;box-shadow:var(--shadow);border:1px solid var(--border)}
+  .login-badge{display:inline-block;background:var(--primary);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:4px 12px;border-radius:20px;margin-bottom:16px}
+  .login-title{font-size:22px;font-weight:700;margin-bottom:6px;line-height:1.3}
+  .login-sub{font-size:13px;color:var(--muted);margin-bottom:32px}
+  .field-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;margin-bottom:6px;display:block}
+  .field-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;color:var(--text);background:#fafaf8;transition:border-color .2s;margin-bottom:16px;-webkit-appearance:none}
+  .field-input:focus{outline:none;border-color:var(--primary);background:#fff}
+  .login-error{background:var(--wrong-bg);color:var(--wrong);border:1px solid #f5b5b5;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;display:none}
+  .start-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:8px}
+  .start-btn:active{transform:scale(.98);opacity:.9}
+  .start-btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn-loading{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #quiz-screen{display:none}
+  .quiz-header{background:var(--primary);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+  .quiz-header-title{font-size:14px;font-weight:700}
+  .quiz-header-info{font-size:12px;opacity:.8}
+  .progress-bar-wrap{height:4px;background:rgba(255,255,255,.3)}
+  .progress-bar-fill{height:100%;background:#fff;transition:width .4s ease}
+  .quiz-body{padding:16px 18px;max-width:600px;margin:0 auto}
+  .q-number{font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.1em;margin-bottom:5px}
+  .q-type-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:8px}
+  .q-type-badge.mc{background:var(--primary-light);color:var(--primary)}
+  .q-type-badge.sp{background:#fff3e0;color:#e67e00}
+  .q-sentence{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+  .q-en{font-family:'DM Mono',monospace;font-size:15px;line-height:1.8;margin-bottom:10px;word-break:break-word}
+  .q-en u{text-decoration:none;border-bottom:2px solid var(--mark);color:var(--mark);font-weight:600}
+  .jmark{color:var(--mark);border-bottom:2px solid var(--mark);font-weight:600}
+  .q-ja{font-size:14px;color:var(--muted);line-height:1.7}
+  .choices{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+  .choice-btn{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:11px 16px;font-size:15px;font-family:inherit;color:var(--text);text-align:left;cursor:pointer;transition:border-color .15s,background .15s,transform .1s;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+  .choice-btn:active{transform:scale(.99)}
+  .choice-btn:not(:disabled):hover{border-color:var(--primary);background:var(--primary-light)}
+  .choice-num{width:28px;height:28px;border-radius:50%;background:var(--bg);color:var(--muted);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s}
+  .choice-btn.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+  .choice-btn.correct .choice-num{background:var(--correct);color:#fff}
+  .choice-btn.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
+  .choice-btn.wrong .choice-num{background:var(--wrong);color:#fff}
+  .choice-btn:disabled{cursor:default}
+  .spelling-wrap{margin-bottom:24px}
+  .spelling-input{width:100%;padding:16px 18px;border:2px solid var(--border);border-radius:12px;font-size:20px;font-family:'DM Mono',monospace;font-weight:500;color:var(--text);background:var(--card);text-align:center;letter-spacing:.1em;-webkit-appearance:none;transition:border-color .2s}
+  .spelling-input:focus{outline:none;border-color:var(--primary)}
+  .spelling-input.correct{border-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+  .spelling-input.wrong{border-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
+  .spelling-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+  .submit-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;margin-bottom:10px}
+  .submit-btn:disabled{opacity:.4;cursor:not-allowed}
+  .submit-btn:active{transform:scale(.98)}
+  .feedback{border-radius:12px;padding:14px 18px;margin-bottom:16px;font-size:14px;font-weight:500;display:none;align-items:flex-start;gap:10px}
+  .feedback.correct{background:var(--correct-bg);color:var(--correct);border:1px solid #a8d8bc;display:flex}
+  .feedback.wrong{background:var(--wrong-bg);color:var(--wrong);border:1px solid #f5b5b5;display:flex}
+  .feedback-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+  .next-btn{width:100%;background:var(--text);color:#fff;border:none;border-radius:10px;padding:12px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .1s;display:none}
+  .next-btn.visible{display:block}
+  .next-btn:active{transform:scale(.98)}
+  #result-screen{display:none;padding:40px 24px;max-width:480px;margin:0 auto}
+  .result-title{font-size:28px;font-weight:700;margin-bottom:8px}
+  .result-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
+  .score-circle{width:140px;height:140px;border-radius:50%;background:var(--primary);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 32px}
+  .score-number{font-size:48px;font-weight:700;line-height:1}
+  .score-label{font-size:12px;opacity:.8;margin-top:2px}
+  .result-breakdown{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px}
+  .result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
+  .result-row:last-child{border-bottom:none}
+  .result-row-label{color:var(--muted)}
+  .result-row-val{font-weight:700}
+  .result-row-val.c{color:var(--correct)}
+  .result-row-val.w{color:var(--wrong)}
+  .send-status{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px;min-height:20px}
+  .send-status.ok{color:var(--correct)}
+  .send-status.err{color:var(--wrong)}
+  .retry-btn{width:100%;background:var(--primary);color:#fff;border:none;border-radius:10px;padding:14px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:8px}
+  .wrong-list{margin-top:24px}
+  .wrong-list-title{font-size:14px;font-weight:700;color:var(--muted);margin-bottom:12px}
+  .wrong-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;font-size:13px}
+  .wrong-item-q{color:var(--muted);margin-bottom:4px}
+  .wrong-item-ans{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px}
+  .tag.your{background:var(--wrong-bg);color:var(--wrong)}
+  .tag.correct{background:var(--correct-bg);color:var(--correct)}
+  .q-blank{display:inline-block;min-width:3em;border-bottom:2px solid #2a5298;margin:0 2px;vertical-align:bottom;}
+  .spell-word-input{display:inline-block;width:auto;min-width:48px;max-width:100%;box-sizing:content-box;padding:3px 4px;margin:0 2px;border:none;border-bottom:2px solid var(--primary);font-size:16px;font-family:'DM Mono',monospace;color:var(--text);background:var(--card);text-align:center;-webkit-appearance:none;vertical-align:middle}
+  .spell-word-input:focus{outline:none;border-bottom-color:var(--correct)}
+  .spell-word-input.correct{border-bottom-color:var(--correct);background:var(--correct-bg);color:var(--correct)}
+  .spell-word-input.wrong{border-bottom-color:var(--wrong);background:var(--wrong-bg);color:var(--wrong)}
+  .q-en-spell{line-height:2.6;font-size:16px;word-break:keep-all;overflow-wrap:normal}
+  .q-sentence{display:flex;flex-direction:column}
+  .q-sentence.spell-mode .q-ja{order:1;font-size:18px;font-weight:500;color:var(--text);margin-bottom:4px}
+  .q-sentence.spell-mode .q-en{order:2;margin-top:8px}
+  .q-sentence.spell-mode .spell-guide{order:3}
+  .spell-guide{font-size:12px;color:var(--muted);margin:10px 0 0;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-card">
+    <span class="login-badge">入試対策基礎特訓講座</span>
+    <h1 class="login-title">英単語確認テスト<br>【11段】</h1>
+    <p class="login-sub">全40問・制限時間なし</p>
+    <div class="login-error" id="login-error"></div>
+    <label class="field-label" for="input-name">お名前</label>
+    <input class="field-input" type="text" id="input-name" placeholder="例：山田太郎" autocomplete="name">
+    <label class="field-label" for="input-id">生徒番号</label>
+    <input class="field-input" type="text" id="input-id" placeholder="例：2501" autocomplete="off" inputmode="numeric">
+    <button class="start-btn" id="start-btn" onclick="startLogin()" disabled>テストを開始する</button>
+  </div>
+</div>
+<div id="quiz-screen">
+  <div class="quiz-header">
+    <div class="quiz-header-title">英単語テスト【11段】</div>
+    <div class="quiz-header-info" id="header-info">1 / 40</div>
+  </div>
+  <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar" style="width:0%"></div></div>
+  <div class="quiz-body">
+    <div class="q-number" id="q-number">問題 1</div>
+    <div class="q-type-badge mc" id="q-type-badge">日本語を選ぶ</div>
+    <div class="q-sentence" id="q-sentence">
+      <div class="q-en" id="q-en"></div>
+      <div class="q-ja" id="q-ja"></div>
+      <p class="spell-guide" id="spell-guide" style="display:none">スペースキーで次のマスへ進みます。すべて入力したら「確認する」を押してください。</p>
+    </div>
+    <div class="choices" id="choices-area"></div>
+    <button class="submit-btn" id="submit-btn" onclick="checkSpelling()" style="display:none">確認する</button>
+    <div class="feedback" id="feedback"><span class="feedback-icon" id="feedback-icon"></span><span id="feedback-text"></span></div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+</div>
+<div id="result-screen">
+  <h2 class="result-title">テスト完了！</h2>
+  <p class="result-sub" id="result-name-sub"></p>
+  <div class="score-circle"><div class="score-number" id="score-number">0</div><div class="score-label">/ 40問正解</div></div>
+  <div class="result-breakdown">
+    <div class="result-row"><span class="result-row-label">正解（日本語4択）</span><span class="result-row-val c" id="res-mc-c">-</span></div>
+    <div class="result-row"><span class="result-row-label">正解（英語入力）</span><span class="result-row-val c" id="res-sp-c">-</span></div>
+    <div class="result-row"><span class="result-row-label">不正解</span><span class="result-row-val w" id="res-wrong">-</span></div>
+    <div class="result-row"><span class="result-row-label">正答率</span><span class="result-row-val" id="res-rate">-</span></div>
+  </div>
+  <div class="send-status" id="send-status"></div>
+  <div class="wrong-list" id="wrong-list"></div>
+  <button class="retry-btn" onclick="retryQuiz()">もう一度挑戦する</button>
+</div>
+<script>
+const GAS_URL='https://script.google.com/macros/s/AKfycbxHCGsHhsLwygDs_N20njZTKl5A2OPYS2__rzVEcHOf0rw8bB5nUvfsc577hb0egbya0A/exec';
+const LEVEL='11段';
+const questions=[{"id": 1, "en": "We must run one <u>kilometer</u> tomorrow.", "ja": "私たちは明日1　　　　　　　走らなければなりません。", "answer": "キロメートル", "choices": ["キロメートル", "メートル", "マイル", "センチメートル"]}, {"id": 2, "en": "<u>Shoot</u> right now.", "ja": "今すぐ　　　　　　ろ。", "answer": "シュートし", "choices": ["シュートし", "パスし", "ドリブルし", "ジャンプし"]}, {"id": 3, "en": "Why did the number of these animals <u>decrease</u>?", "ja": "なぜこれらの動物の数は　　　　しまったのですか。", "answer": "減って", "choices": ["減って", "増えて", "変わって", "戻って"]}, {"id": 4, "en": "I <u>have been to</u> Hiroshima.", "ja": "私は広島　　　　　　　　　　　　。", "answer": "に行ったことがあります", "choices": ["に行ったことがあります", "に住んだことがあります", "に行くつもりです", "に行ったことがありません"]}, {"id": 5, "en": "Don’t <u>give up</u>.", "ja": "　　　　　　な。", "answer": "あきらめる", "choices": ["あきらめる", "急ぐ", "迷う", "休む"]}, {"id": 6, "en": "We want the first <u>prize</u>.", "ja": "私たちは一等　　　　がほしいです。", "answer": "賞", "choices": ["賞", "席", "地", "車"]}, {"id": 7, "en": "Her song will <u>attract</u> everyone.", "ja": "彼女の歌はみんな　　　　　　　でしょう。", "answer": "を引きつける", "choices": ["を引きつける", "を驚かせる", "を悲しませる", "を退屈させる"]}, {"id": 8, "en": "What do you <u>ask for</u>?", "ja": "あなたは何　　　　ているのですか。", "answer": "を求め", "choices": ["を求め", "を待っ", "を作っ", "を食べ"]}, {"id": 9, "en": "I often <u>hear of</u> Keiko from Tom.", "ja": "私はよくトムからケイコ　　　　　　　ます。", "answer": "のことを聞き", "choices": ["のことを聞き", "のことを話し", "の写真をもらい", "の本を借り"]}, {"id": 10, "en": "They use computers to <u>translate</u>.", "ja": "彼らは　　　　　ためにコンピュータを使います。", "answer": "翻訳する", "choices": ["翻訳する", "計算する", "印刷する", "検索する"]}, {"id": 11, "en": "Did you <u>try to</u> run fast?", "ja": "あなたは速く走　　　　　　ましたか。", "answer": "ろうと努め", "choices": ["ろうと努め", "るのをやめ", "れるようになり", "るふりをし"]}, {"id": 12, "en": "I drew a <u>line</u> on the paper.", "ja": "私は紙の上に1本の　　　　を引きました。", "answer": "線", "choices": ["線", "矢印", "円", "点"]}, {"id": 13, "en": "Did you watch the TV <u>program</u> last Sunday?", "ja": "あなたはこの前の日曜日、そのテレビ　　　　を見ましたか。", "answer": "番組", "choices": ["番組", "画面", "広告", "中継"]}, {"id": 14, "en": "Did you <u>encourage</u> him?", "ja": "あなたは彼　　　　　　ましたか。", "answer": "を勇気づけ", "choices": ["を勇気づけ", "を招待し", "をしかり", "を無視し"]}, {"id": 15, "en": "Do you <u>have a cold</u>?", "ja": "あなたは　　　　　　　いますか。", "answer": "かぜをひいて", "choices": ["かぜをひいて", "熱が出て", "けがをして", "疲れて"]}, {"id": 16, "en": "Did you <u>shout</u> then?", "ja": "あなたはそのとき　　　　だのですか。", "answer": "叫ん", "choices": ["叫ん", "転ん", "休ん", "飛ん"]}, {"id": 17, "en": "This book <u>costs</u> ten dollars.", "ja": "この本は10ドル　　　　　　。", "answer": "かかります", "choices": ["かかります", "残ります", "足りません", "安くなります"]}, {"id": 18, "en": "Bombs were dropped <u>one after another</u>.", "ja": "爆弾が　　　　に落とされました。", "answer": "次々", "choices": ["次々", "同時", "一度", "最後"]}, {"id": 19, "en": "<u>On the other hand</u>, he is kind.", "ja": "　　　　　、彼は親切です。", "answer": "他方では", "choices": ["他方では", "例えば", "実際に", "その結果"]}, {"id": 20, "en": "Did the dish <u>drop</u> from his hand?", "ja": "そのお皿は彼の手から　　　　ましたか。", "answer": "落ち", "choices": ["落ち", "取られ", "渡され", "投げられ"]}, {"id": 21, "en": "I <u>want</u> her <u>to</u> clean the classroom.", "ja": "私は彼女　　　　教室をそうじ　　　　　　　　です。", "answer": "に〜してもらいたい", "choices": ["に〜してもらいたい", "に〜してあげたい", "と〜したい", "に〜させたくない"]}, {"id": 22, "en": "Please turn right at the second <u>traffic light</u>.", "ja": "2つ目の　　　　　で右に曲がってください。", "answer": "交通信号", "choices": ["交通信号", "交差点", "横断歩道", "駐車場"]}, {"id": 23, "en": "<u>In my opinion</u>, it’ll be snowy tomorrow.", "ja": "　　　　　　　、明日は雪が降るでしょう。", "answer": "私の考えでは", "choices": ["私の考えでは", "天気予報によると", "驚いたことに", "幸運にも"]}, {"id": 24, "en": "The number of cars will <u>increase</u>.", "ja": "車の数は　　　　でしょう。", "answer": "増える", "choices": ["増える", "減る", "変わらない", "止まる"]}, {"id": 25, "en": "Bounce ball is <u>a kind of</u> sports.", "ja": "バウンスボールは　　　　スポーツです。", "answer": "一種の", "choices": ["一種の", "人気の", "新しい", "世界一の"]}, {"id": 26, "en": "I <u>hope to</u> meet you again.", "ja": "私は再びあなたに会う　　　　　　ます。", "answer": "ことを望み", "choices": ["ことを望み", "ことを忘れ", "ことをあきらめ", "ことを恐れ"]}, {"id": 27, "en": "She became <u>more and more</u> popular there.", "ja": "彼女はそこで　　　　　人気になりました。", "answer": "ますます", "choices": ["ますます", "一時的に", "再び", "急に"]}, {"id": 28, "en": "You should call him <u>right away</u>.", "ja": "　　　　彼に電話すべきです。", "answer": "今すぐ", "choices": ["今すぐ", "あとで", "明日", "毎日"]}, {"id": 29, "en": "I met Yuki on <u>business</u>.", "ja": "私は　　　　でユキに会いました。", "answer": "仕事", "choices": ["仕事", "旅行", "休暇", "偶然"]}, {"id": 30, "en": "He changed the <u>topic</u>.", "ja": "彼は　　　　を変えました。", "answer": "話題", "choices": ["話題", "予定", "髪型", "名前"]}, {"id": 31, "en": "You don’t have to <u>worry about</u> the cat.", "ja": "そのネコ　　　　　　　　　必要はありません。", "answer": "について心配する", "choices": ["について心配する", "について話す", "の世話をする", "を探す"]}, {"id": 32, "en": "They needed the <u>survey</u>.", "ja": "彼らはその　　　　が必要でした。", "answer": "調査", "choices": ["調査", "許可", "道具", "休憩"]}, {"id": 33, "en": "They have <u>not only</u> dogs <u>but also</u> cats.", "ja": "彼らはイヌ　　　　　　　ネコ　　　　飼っています。", "answer": "だけではなく〜も", "choices": ["だけではなく〜も", "ではなく〜を", "の代わりに〜を", "よりも〜を多く"]}, {"id": 34, "en": "Did you <u>hear about</u> the news?", "ja": "あなたはその知らせ　　　　　　　ましたか。", "answer": "について聞き", "choices": ["について聞き", "について話し", "を読み", "を忘れ"]}, {"id": 35, "en": "I can understand your <u>feelings</u>.", "ja": "私はあなたの　　　　を理解できます。", "answer": "気持ち", "choices": ["気持ち", "言葉", "英語", "説明"]}, {"id": 36, "type": "spelling", "ja": "トムは塩を<span class=\"jmark\">加える</span>でしょう。", "en": "Tom will <span class=\"spell-blank\" data-idx=\"0\"></span> the salt.", "blanks": [{"accept": ["add"], "words": 1}], "answer": "add"}, {"id": 37, "type": "spelling", "ja": "このチケットの<span class=\"jmark\">価格</span>はいくらですか。", "en": "What’s the <span class=\"spell-blank\" data-idx=\"0\"></span> of this ticket?", "blanks": [{"accept": ["price"], "words": 1}], "answer": "price"}, {"id": 38, "type": "spelling", "ja": "<span class=\"jmark\">ご存じのように</span>、私はすしを食べることができません。", "en": "<span class=\"spell-blank\" data-idx=\"0\"></span>, I can’t eat sushi.", "blanks": [{"accept": ["As you know"], "words": 3}], "answer": "As you know"}, {"id": 39, "type": "spelling", "ja": "ケンはすぐに<span class=\"jmark\">よくなる</span>でしょう。", "en": "Ken will <span class=\"spell-blank\" data-idx=\"0\"></span> soon.", "blanks": [{"accept": ["get well"], "words": 2}], "answer": "get well"}, {"id": 40, "type": "spelling", "ja": "私は今、<span class=\"jmark\">お金</span>をまったく持っていません。", "en": "I have no <span class=\"spell-blank\" data-idx=\"0\"></span> now.", "blanks": [{"accept": ["money"], "words": 1}], "answer": "money"}];
+function toBlank(s){return String(s).replace(/\u3000+/g,'<span class="q-blank"></span>');}
+let current=0,score=0,mcCorrect=0,spCorrect=0,wrongItems=[],studentName='',studentId='',answered=false;
+document.getElementById('input-name').addEventListener('input',validateLogin);
+document.getElementById('input-id').addEventListener('input',validateLogin);
+function validateLogin(){const n=document.getElementById('input-name').value.trim(),i=document.getElementById('input-id').value.trim();document.getElementById('start-btn').disabled=!(n&&i);}
+async function startLogin(){
+  const name=document.getElementById('input-name').value.trim(),id=document.getElementById('input-id').value.trim();
+  if(!name||!id)return;
+  const btn=document.getElementById('start-btn'),errEl=document.getElementById('login-error');
+  btn.disabled=true;btn.innerHTML='<span class="btn-loading"></span>確認中…';errEl.style.display='none';
+  try{
+    const res=await fetch(`${GAS_URL}?action=login&id=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}`);
+    const data=await res.json();
+    if(data.status==='ok'){studentName=data.studentName;studentId=data.studentId;startQuiz();}
+    else{errEl.textContent=data.message||'ログインできませんでした。';errEl.style.display='block';btn.disabled=false;btn.textContent='テストを開始する';}
+  }catch(e){errEl.textContent='通信エラーが発生しました。Wi-Fiを確認してもう一度お試しください。';errEl.style.display='block';btn.disabled=false;btn.textContent='テストを開始する';}
+}
+function startQuiz(){document.getElementById('login-screen').style.display='none';document.getElementById('quiz-screen').style.display='block';current=0;score=0;mcCorrect=0;spCorrect=0;wrongItems=[];answered=false;showQuestion();}
+function showQuestion(){
+  const q=questions[current];answered=false;
+  document.getElementById('q-number').textContent=`問題 ${q.id}`;
+  document.getElementById('header-info').textContent=`${current+1} / ${questions.length}`;
+  document.getElementById('progress-bar').style.width=`${(current/questions.length)*100}%`;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const isSp=q.type==='spelling';
+  if(isSp){
+    document.getElementById('q-type-badge').className='q-type-badge sp';
+    document.getElementById('q-type-badge').textContent='英語を書く';
+    // 英文中の各空欄を「単語数分の入力欄」に変換（案B）
+    let enHtml=q.en;
+    enHtml=enHtml.replace(/<span class="spell-blank" data-idx="(\d+)"><\/span>/g,(m,idx)=>{
+      const bl=q.blanks[idx];
+      const wcount=bl.words||Math.max(...bl.accept.map(a=>a.trim().split(/\s+/).length));
+      let inputs='';
+      for(let w=0;w<wcount;w++){
+        inputs+=`<input class="spell-word-input" type="text" data-idx="${idx}" data-word="${w}" lang="en" inputmode="text" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">`;
+      }
+      return inputs;
+    });
+    document.getElementById('q-en').className='q-en q-en-spell';
+    document.getElementById('q-en').innerHTML=enHtml;
+    document.getElementById('q-ja').innerHTML=q.ja;
+    document.getElementById('q-sentence').classList.add('spell-mode');
+    document.getElementById('spell-guide').style.display='block';
+    document.getElementById('choices-area').style.display='none';
+    document.getElementById('submit-btn').style.display='block';
+    document.getElementById('submit-btn').disabled=false;
+    // スペースキーで次の入力欄へ移動
+    const sInputs=[...document.querySelectorAll('#q-en .spell-word-input')];
+    sInputs.forEach((inp,i)=>{
+      // 入力文字数に応じてマス幅を自動調整（等幅フォントなのでchで過不足なく伸びる）
+      const fit=()=>{const n=Math.max((inp.value||'').length,4);inp.style.width=(n+1)+'ch';};
+      fit();inp.addEventListener('input',fit);
+      inp.addEventListener('keydown',function(e){
+        if(e.key===' '||e.code==='Space'){e.preventDefault();if(i+1<sInputs.length){sInputs[i+1].focus();}else{document.getElementById('submit-btn').focus();}}
+      });
+    });
+    if(sInputs[0])sInputs[0].focus();
+  }else{
+    document.getElementById('q-type-badge').className='q-type-badge mc';
+    document.getElementById('q-type-badge').textContent='日本語を選ぶ';
+    document.getElementById('q-sentence').classList.remove('spell-mode');
+    document.getElementById('spell-guide').style.display='none';
+    document.getElementById('q-en').className='q-en';
+    document.getElementById('q-en').innerHTML=q.en;
+    document.getElementById('q-ja').innerHTML=toBlank(q.ja);
+    document.getElementById('choices-area').style.display='flex';
+    document.getElementById('submit-btn').style.display='none';
+    const shuffled=[...q.choices].sort(()=>Math.random()-.5);
+    const labels=['ア','イ','ウ','エ'];
+    document.getElementById('choices-area').innerHTML=shuffled.map((c,i)=>`<button class="choice-btn" data-choice="${c.replace(/"/g,'&quot;')}"><span class="choice-num">${labels[i]}</span><span>${c}</span></button>`).join('');
+    document.querySelectorAll('.choice-btn').forEach(btn=>{btn.addEventListener('click',function(){selectChoice(this,this.getAttribute('data-choice'),q.answer);});});
+  }
+}
+function selectChoice(btn,selected,correct){
+  if(answered)return;answered=true;
+  document.querySelectorAll('.choice-btn').forEach(b=>b.disabled=true);
+  if(selected===correct){btn.classList.add('correct');score++;mcCorrect++;showFeedback(true,`正解！「${correct}」`);}
+  else{btn.classList.add('wrong');document.querySelectorAll('.choice-btn').forEach(b=>{if(b.querySelector('span:last-child').textContent===correct)b.classList.add('correct');});wrongItems.push({id:questions[current].id,q:questions[current].ja||questions[current].en,yours:selected,correct});showFeedback(false,`不正解。正しくは「${correct}」です。`);}
+  document.getElementById('next-btn').className='next-btn visible';
+}
+function checkSpelling(){
+  if(answered)return;
+  const q=questions[current];
+  const inputs=[...document.querySelectorAll('#q-en .spell-word-input')];
+  for(const inp of inputs){if(!inp.value.trim()){inp.focus();return;}}
+  answered=true;
+  document.getElementById('submit-btn').disabled=true;
+  const norm=s=>s.trim().toLowerCase().replace(/\s+/g,' ');
+  let allCorrect=true;
+  const yoursArr=[];
+  q.blanks.forEach((bl,bi)=>{
+    // この空欄の入力欄をまとめる
+    const wInputs=inputs.filter(inp=>parseInt(inp.dataset.idx)===bi);
+    const joined=wInputs.map(inp=>inp.value.trim()).join(' ');
+    yoursArr.push(joined);
+    const ok=bl.accept.some(a=>norm(a)===norm(joined));
+    wInputs.forEach(inp=>{inp.classList.add(ok?'correct':'wrong');inp.disabled=true;});
+    if(!ok)allCorrect=false;
+  });
+  const correctStr=q.blanks.map(b=>b.accept.join(' または ')).join(' , ');
+  if(allCorrect){score++;spCorrect++;showFeedback(true,`正解！ "${correctStr}"`);}
+  else{wrongItems.push({id:q.id,q:q.ja,yours:yoursArr.join(' / '),correct:correctStr});showFeedback(false,`不正解。正しくは "${correctStr}" です。`);}
+  document.getElementById('next-btn').className='next-btn visible';
+}
+function showFeedback(correct,msg){const fb=document.getElementById('feedback');document.getElementById('feedback-icon').textContent=correct?'✓':'✗';document.getElementById('feedback-text').textContent=msg;fb.className='feedback '+(correct?'correct':'wrong');}
+function nextQuestion(){current++;if(current>=questions.length){showResult();}else{showQuestion();window.scrollTo(0,0);}}
+function showResult(){
+  document.getElementById('quiz-screen').style.display='none';
+  document.getElementById('result-screen').style.display='block';
+  document.getElementById('result-name-sub').textContent=`${studentName}（${studentId}）`;
+  document.getElementById('score-number').textContent=score;
+  document.getElementById('res-mc-c').textContent=`${mcCorrect} / 35問`;
+  document.getElementById('res-sp-c').textContent=`${spCorrect} / 5問`;
+  document.getElementById('res-wrong').textContent=`${questions.length-score}問`;
+  document.getElementById('res-rate').textContent=`${Math.round(score/questions.length*100)}%`;
+  if(wrongItems.length>0){document.getElementById('wrong-list').innerHTML=`<div class="wrong-list-title">間違えた問題（${wrongItems.length}問）</div>`+wrongItems.map(w=>`<div class="wrong-item"><div class="wrong-item-q">問${w.id}　${w.q}</div><div class="wrong-item-ans"><span class="tag your">あなた：${w.yours}</span><span class="tag correct">正解：${w.correct}</span></div></div>`).join('');}
+  else{document.getElementById('wrong-list').innerHTML='<p style="color:var(--correct);font-weight:700;text-align:center;margin-top:16px;">全問正解！素晴らしい！🎉</p>';}
+  window.scrollTo(0,0);sendResult();
+}
+async function sendResult(){
+  const statusEl=document.getElementById('send-status');
+  statusEl.textContent='結果を記録中…';statusEl.className='send-status';
+  const payload={studentId,studentName,level:LEVEL,score,total:questions.length,mcCorrect,mcTotal:35,spCorrect,spTotal:5};
+  try{
+    await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    statusEl.textContent='✓ 結果をスプレッドシートに記録しました';statusEl.className='send-status ok';
+  }catch(e){statusEl.textContent='※ 結果の送信に失敗しました。';statusEl.className='send-status err';}
+}
+function retryQuiz(){
+  document.getElementById('result-screen').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('login-error').style.display='none';
+  document.getElementById('start-btn').textContent='テストを開始する';
+  current=0;score=0;mcCorrect=0;spCorrect=0;wrongItems=[];studentName='';studentId='';
+}
+</script>
+</body>
+</html>
